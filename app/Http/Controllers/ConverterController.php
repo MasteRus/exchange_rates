@@ -41,7 +41,7 @@ class ConverterController extends Controller
         }
 
         //Get exchange rates
-        $exchangeRates = $this->service->getExchangeRates2();
+        $exchangeRates = $this->service->getExchangeRates();
 
         return [
             'currency' => $outputCurrency,
