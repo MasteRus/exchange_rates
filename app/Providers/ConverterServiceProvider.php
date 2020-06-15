@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\DataSource\IDataSource;
-use App\DataSource\DataSource;
 use Illuminate\Support\ServiceProvider;
 
 class ConverterServiceProvider extends ServiceProvider
@@ -15,6 +14,9 @@ class ConverterServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Мы хотим сделать расширяемый код, чтобы потом с легкостью можно было
+        // заменить источник данных и при этом нам не пришлось бы переписывать
+        // Поэтому воспользуемся конфигом и там укажем текущий источник данных
         $this->app->bind(IDataSource::class, function () {
             $class = 'App\\DataSource\\' . config('currencies.default_source') . 'DataSource';
             return new $class();

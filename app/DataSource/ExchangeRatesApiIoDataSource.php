@@ -5,15 +5,22 @@ namespace App\DataSource;
 
 use Illuminate\Support\Facades\Cache;
 
+// Это альтернативный источник данных
 class ExchangeRatesApiIoDataSource implements IDataSource
 {
     protected $url = '';
 
+    /**
+     * ExchangeRatesApiIoDataSource constructor.
+     */
     public function __construct()
     {
         $this->url = 'https://api.exchangeratesapi.io/latest?symbols=RUB&';
     }
 
+    /**
+     * @return array
+     */
     public function getExchangeRates(): array
     {
         $exchangeRates = [];
@@ -41,6 +48,7 @@ class ExchangeRatesApiIoDataSource implements IDataSource
                 $exchangeRates[$c] = $response->rates->RUB;
                 curl_close($curl);
             }
+            //Кэшируем, чтобы не мучать внешний сервис множеством обращений
             Cache::set('exchange_rates', $exchangeRates, config('currencies.cache_timeout'));
         } catch (\Exception $e) { // на всякий случай обработчик ошибок
             echo 'Error: ' . $e->getMessage();

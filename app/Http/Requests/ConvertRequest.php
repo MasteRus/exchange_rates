@@ -44,6 +44,9 @@ class ConvertRequest extends FormRequest
     }
 
 
+    /**
+     * @return array
+     */
     public function validationData()
     {
         return array_merge($this->request->all(), [
@@ -52,6 +55,9 @@ class ConvertRequest extends FormRequest
         ]);
     }
 
+    /**
+     * @param Validator $validator
+     */
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json($validator->errors(), 422));

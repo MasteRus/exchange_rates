@@ -10,8 +10,15 @@ use Illuminate\Support\Facades\Cache;
 
 class ConverterService
 {
+    /**
+     * @var IDataSource
+     */
     private $exchangeSource;
 
+    /**
+     * ConverterService constructor.
+     * @param IDataSource $exchangeSource
+     */
     public function __construct(IDataSource $exchangeSource)
     {
         $this->exchangeSource = $exchangeSource;
