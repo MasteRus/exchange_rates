@@ -4,8 +4,10 @@ namespace App\DataSource;
 
 use Illuminate\Support\Facades\Cache;
 
-class CbrDataSource extends DataSource
+class CbrDataSource implements IDataSource
 {
+    protected $url = '';
+
     public function __construct()
     {
         $this->url = 'http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL';

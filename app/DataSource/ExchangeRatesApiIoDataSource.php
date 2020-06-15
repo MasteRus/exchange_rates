@@ -5,8 +5,10 @@ namespace App\DataSource;
 
 use Illuminate\Support\Facades\Cache;
 
-class ExchangeRatesApiIoDataSource
+class ExchangeRatesApiIoDataSource implements IDataSource
 {
+    protected $url = '';
+
     public function __construct()
     {
         $this->url = 'https://api.exchangeratesapi.io/latest?symbols=RUB&';

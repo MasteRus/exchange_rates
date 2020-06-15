@@ -4,10 +4,18 @@
 namespace App\Services;
 
 
+use App\DataSource\IDataSource;
+use App\DataSource\DataSource;
 use Illuminate\Support\Facades\Cache;
 
 class ConverterService
 {
+    private $exchangeSource;
+
+    public function __construct(IDataSource $exchangeSource)
+    {
+        $this->exchangeSource = $exchangeSource;
+    }
 
     /**
      * @return array
@@ -16,9 +24,7 @@ class ConverterService
     {
         $exchangeRates = Cache::get('exchange_rates', []);
         if (!count($exchangeRates)) {
-            $class = 'App\\DataSource\\'.config('currencies.default_source') . 'DataSource';
-            $dataSource = new $class();
-            $exchangeRates = $dataSource->getExchangeRates();
+            $exchangeRates = $this->exchangeSource->getExchangeRates();
         }
         return $exchangeRates;
     }
