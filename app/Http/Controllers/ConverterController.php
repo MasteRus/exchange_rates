@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NoExchangeRateException;
 use App\Http\Requests\ConvertRequest;
 use App\Services\ConverterService;
 
 class ConverterController extends Controller
 {
-    private $service;
+    private ConverterService $service;
 
     /**
      * @param ConverterService $service
@@ -22,7 +23,8 @@ class ConverterController extends Controller
      * @param string $inputSum
      * @param string $outputCurrency
      * @param ConvertRequest $request
-     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return array
+     * @throws NoExchangeRateException
      */
     public function convert(string $inputSum, string $outputCurrency, ConvertRequest $request)
     {
@@ -42,16 +44,29 @@ class ConverterController extends Controller
         }
 
         //Get exchange rates
+        $result = $this->calculate($inputCurrency, $outputCurrency, $count);
+        return $result;
+    }
+
+    /**
+     * @param string $inputCurrency
+     * @param string $outputCurrency
+     * @param float $count
+     * @throws NoExchangeRateException
+     */
+    protected function calculate(string $inputCurrency, string $outputCurrency, float $count): array
+    {
         $exchangeRates = $this->service->getExchangeRates();
 
         //Error if we can't get cources info
         if (!(array_key_exists($inputCurrency, $exchangeRates) && array_key_exists($inputCurrency, $exchangeRates))) {
-            return response('We have no exchange rates for choosen currencies', 400);
+            throw new NoExchangeRateException();
         }
 
-        return [
+        $result = [
             'currency' => $outputCurrency,
             'sum' => $exchangeRates[$inputCurrency] * $count / $exchangeRates[$outputCurrency],
         ];
+        return $result;
     }
 }

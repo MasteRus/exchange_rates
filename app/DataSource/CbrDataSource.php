@@ -3,6 +3,7 @@
 namespace App\DataSource;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 // Это основной источник данных по заданию
 class CbrDataSource implements IDataSource
@@ -14,7 +15,8 @@ class CbrDataSource implements IDataSource
      */
     public function __construct()
     {
-        $this->url = 'http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL';
+        //@TODO TO CONFIG
+        $this->url = config('currencies.datasources.cbr.url');
     }
 
     /**
@@ -42,10 +44,10 @@ class CbrDataSource implements IDataSource
             }
             //Не забываем базовую валюту тоже добавить, её в запросе нет
             $exchangeRates['RUB'] = 1;
-            //Кэшируем, чтобы не мучать внешний сервис множеством обращений
+            //Кэшируем, чтобы не мучить внешний сервис множеством обращений
             Cache::set('exchange_rates', $exchangeRates, config('currencies.cache_timeout'));
         } catch (\Exception $e) { // на всякий случай обработчик ошибок
-            echo 'Error: ' . $e->getMessage();
+            Log::error($e->getMessage());
         }
         return $exchangeRates;
     }

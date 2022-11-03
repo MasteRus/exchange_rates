@@ -13,7 +13,7 @@ class ConverterService
     /**
      * @var IDataSource
      */
-    private $exchangeSource;
+    private IDataSource $exchangeSource;
 
     /**
      * ConverterService constructor.
