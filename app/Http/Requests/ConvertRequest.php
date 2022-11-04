@@ -33,7 +33,7 @@ class ConvertRequest extends FormRequest
             'inputSum' => [
                 'required',
                 'string',
-                'regex:/(^([\d])+(\.)*([\d])*'. $currenciesStr .'$)/'
+                'regex:/(^([\d])+(\.)*([\d])*('. $currenciesStr .')$)/'
             ],
             'outputCurrency' => [
                 'required',

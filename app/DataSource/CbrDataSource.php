@@ -15,7 +15,6 @@ class CbrDataSource implements IDataSource
      */
     public function __construct()
     {
-        //@TODO TO CONFIG
         $this->url = config('currencies.datasources.cbr.url');
     }
 

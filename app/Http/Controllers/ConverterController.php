@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dtos\ConverterDto;
 use App\Exceptions\NoExchangeRateException;
 use App\Http\Requests\ConvertRequest;
 use App\Services\ConverterService;
@@ -18,55 +19,36 @@ class ConverterController extends Controller
         $this->service = $service;
     }
 
-
     /**
      * @param string $inputSum
      * @param string $outputCurrency
      * @param ConvertRequest $request
-     * @return array
+     * @return ConverterDto
      * @throws NoExchangeRateException
      */
-    public function convert(string $inputSum, string $outputCurrency, ConvertRequest $request)
+    public function convert(string $inputSum, string $outputCurrency, ConvertRequest $request):ConverterDto
     {
         // Get output currency from query
         $outputCurrency = mb_substr($outputCurrency, 2);
         // Get input count of our money
         $count = (float)($inputSum);
 
-        $currenciesList = config('currencies.currencies');
-        $currenciesStr = implode('|', $currenciesList);
-        $inputCurrency = [];
-
-        $result = preg_match('/(' . $currenciesStr . ')/', $inputSum, $inputCurrency);
-        // Get input currency from query
-        if ($result) {
-            $inputCurrency = $inputCurrency[0];
-        }
+        $inputCurrency = $this->extractInputCurrency($inputSum);
 
         //Get exchange rates
-        $result = $this->calculate($inputCurrency, $outputCurrency, $count);
-        return $result;
+        return $this->service->calculate($inputCurrency, $outputCurrency, $count);
     }
 
     /**
-     * @param string $inputCurrency
-     * @param string $outputCurrency
-     * @param float $count
-     * @throws NoExchangeRateException
+     * @param string $inputSum
+     * @return string
      */
-    protected function calculate(string $inputCurrency, string $outputCurrency, float $count): array
+    protected function extractInputCurrency(string $inputSum):string
     {
-        $exchangeRates = $this->service->getExchangeRates();
-
-        //Error if we can't get cources info
-        if (!(array_key_exists($inputCurrency, $exchangeRates) && array_key_exists($inputCurrency, $exchangeRates))) {
-            throw new NoExchangeRateException();
-        }
-
-        $result = [
-            'currency' => $outputCurrency,
-            'sum' => $exchangeRates[$inputCurrency] * $count / $exchangeRates[$outputCurrency],
-        ];
-        return $result;
+        $currenciesStr = implode('|', config('currencies.currencies'));
+        $input = [];
+        preg_match('/(' . $currenciesStr . ')/', $inputSum, $input);
+        return $input[0];
     }
+
 }

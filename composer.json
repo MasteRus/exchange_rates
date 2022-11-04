@@ -9,11 +9,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "fruitcake/laravel-cors": "^2.0",
         "asm89/stack-cors": "^2.0",
+        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^9.0",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "spatie/laravel-data": "^1.5"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",
