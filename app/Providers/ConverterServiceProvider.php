@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\DataSource\IDataSource;
 use App\Exceptions\InvalidCurrencySourceException;
+use App\Services\ConverterService;
+use App\Services\IConverterService;
 use Illuminate\Support\ServiceProvider;
 
 class ConverterServiceProvider extends ServiceProvider
@@ -25,6 +27,7 @@ class ConverterServiceProvider extends ServiceProvider
             }
             throw new InvalidCurrencySourceException("Invalid default source");
         });
+        $this->app->bind(IConverterService::class, ConverterService::class);
     }
 
     /**
@@ -34,6 +37,5 @@ class ConverterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 }

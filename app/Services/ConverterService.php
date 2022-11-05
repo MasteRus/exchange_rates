@@ -7,7 +7,7 @@ use App\Dtos\ConverterDto;
 use App\Exceptions\NoExchangeRateException;
 use Illuminate\Support\Facades\Cache;
 
-class ConverterService
+class ConverterService implements IConverterService
 {
     /**
      * @var IDataSource

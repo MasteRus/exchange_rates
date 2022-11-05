@@ -6,15 +6,16 @@ use App\Dtos\ConverterDto;
 use App\Exceptions\NoExchangeRateException;
 use App\Http\Requests\ConvertRequest;
 use App\Services\ConverterService;
+use App\Services\IConverterService;
 
 class ConverterController extends Controller
 {
-    private ConverterService $service;
+    private IConverterService $service;
 
     /**
      * @param ConverterService $service
      */
-    public function __construct(ConverterService $service)
+    public function __construct(IConverterService $service)
     {
         $this->service = $service;
     }
@@ -26,7 +27,7 @@ class ConverterController extends Controller
      * @return ConverterDto
      * @throws NoExchangeRateException
      */
-    public function convert(string $inputSum, string $outputCurrency, ConvertRequest $request):ConverterDto
+    public function convert(string $inputSum, string $outputCurrency, ConvertRequest $request): ConverterDto
     {
         // Get output currency from query
         $outputCurrency = mb_substr($outputCurrency, 2);
@@ -43,11 +44,12 @@ class ConverterController extends Controller
      * @param string $inputSum
      * @return string
      */
-    protected function extractInputCurrency(string $inputSum):string
+    private function extractInputCurrency(string $inputSum): string
     {
         $currenciesStr = implode('|', config('currencies.currencies'));
         $input = [];
         preg_match('/(' . $currenciesStr . ')/', $inputSum, $input);
+
         return $input[0];
     }
 
