@@ -19,3 +19,8 @@ cp .env.example .env
 ```
 php artisan config:cache && php artisan config:clear && php artisan cache:clear
 ```
+
+Также можно запустить тесты через Makefile
+```
+make test
+```

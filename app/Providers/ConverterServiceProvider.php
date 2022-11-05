@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\DataSource\IDataSource;
+use App\Exceptions\InvalidCurrencySourceException;
+use App\Services\ConverterService;
+use App\Services\IConverterService;
 use Illuminate\Support\ServiceProvider;
 
 class ConverterServiceProvider extends ServiceProvider
@@ -19,8 +22,12 @@ class ConverterServiceProvider extends ServiceProvider
         // Поэтому воспользуемся конфигом и там укажем текущий источник данных
         $this->app->bind(IDataSource::class, function () {
             $class = 'App\\DataSource\\' . config('currencies.default_source') . 'DataSource';
-            return new $class();
+            if (class_exists($class)) {
+                return new $class();
+            }
+            throw new InvalidCurrencySourceException("Invalid default source");
         });
+        $this->app->bind(IConverterService::class, ConverterService::class);
     }
 
     /**
@@ -30,6 +37,5 @@ class ConverterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 }
